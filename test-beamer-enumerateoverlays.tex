@@ -1,0 +1,39 @@
+\documentclass{beamer}
+
+\usetheme{Boadilla}
+\usepackage{beamer-enumerateoverlays}
+\enumerateoverlays
+
+\begin{document}
+
+\makeatletter
+\def\printnumbers{
+  Frame: \theframenumber
+
+  Slide: \insertslidenumber{} or \beamer@slidenumber
+
+  Overlay \insertoverlaynumber{} or \beamer@overlaynumber
+
+  Counter: \csuse{thesubframe@\theframenumber}
+
+  Command: \ifcsdef{frame@needs@overlay@number@\theframenumber}{defined}{not defined}
+}
+\makeatother
+
+\begin{frame}{Single}
+
+  \printnumbers
+  
+\end{frame}
+
+\begin{frame}{Double}
+
+\only<1>{First}
+
+\only<2>{Second}
+
+\printnumbers
+  
+\end{frame}
+  
+\end{document}
