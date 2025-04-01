@@ -2,36 +2,28 @@
 \RequirePackage{beamerbaserequires}
 \RequirePackage{relsize}
 \RequirePackage{etoolbox}
-\RequirePackage{totcount}
 
 %
 % Enumerate subframes
 %
-\def\subframe@formatter#1{\relsize{-0.5}\ensuremath{_{\arabic{#1}}}}%
+\def\subframe@formatter{\relsize{-0.5}\ensuremath{_{\insertoverlaynumber}}}%
 \newcommand\enumerateoverlays{%
-  % patch footline in order to show overlays count
   \addtobeamertemplate{footline}{%
-    \ifltxcounter{subframe@\theframenumber}{%
-      % step current frame's overlays counters
-      \stepcounter{subframe@\theframenumber}%
-      \stepcounter{subframes@t@\theframenumber}%
-    }{%
-      % define overlays counter for the current frame
+    \ifltxcounter{subframe@\theframenumber}{}{%
       \newcounter{subframe@\theframenumber}%
-      \stepcounter{subframe@\theframenumber}%
-      % define counter to save total number of overlays
-      \edef\newtfn{\noexpand\newtotcounter{subframes@t@\theframenumber}}%
-      \newtfn%
-      \stepcounter{subframes@t@\theframenumber}%
+      \setcounter{subframe@\theframenumber}{0}%
+    }
+    \ifnumcomp{\csuse{thesubframe@\theframenumber}}{=}{1}{}{
+      \write\@auxout{%
+        \csgdef{frame@needs@overlay@number@\theframenumber}{}%
+      }%
+      \csdef{frame@needs@overlay@number@\theframenumber}{}%
     }%
+    \stepcounter{subframe@\theframenumber}%
     \begingroup%
-    % define the formatter
-    %\let\subframe@formatter=\alph%
-    %\def\subframe@formatter#1{.\arabic{#1}}%
-    % if there are more than 1 subframes, patch \insertframenumber routine
-    \ifnumcomp{\totvalue{subframes@t@\theframenumber}}{=}{1}{}{%
-      \appto{\insertframenumber}{\subframe@formatter{subframe@\theframenumber}}%
-    }%
+    \ifcsdef{frame@needs@overlay@number@\theframenumber}{%
+      \appto{\insertframenumber}{\subframe@formatter{}}%
+    }{}%
   }{\endgroup}%
   % treat broken frames as overlays (freeze frame counter)
   \addtobeamertemplate{frametitle continuation}{}{%
