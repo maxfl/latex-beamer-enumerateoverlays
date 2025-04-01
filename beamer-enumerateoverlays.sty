@@ -6,14 +6,14 @@
 %
 % Enumerate subframes
 %
-\def\subframe@formatter{\relsize{-0.5}\ensuremath{_{\insertoverlaynumber}}}%
+\def\subframe@formatter#1{\relsize{-0.5}\ensuremath{_{\arabic{#1}}}}%
 \newcommand\enumerateoverlays{%
   \addtobeamertemplate{footline}{%
     \ifltxcounter{subframe@\theframenumber}{}{%
       \newcounter{subframe@\theframenumber}%
-      \setcounter{subframe@\theframenumber}{0}%
+      \setcounter{subframe@\theframenumber}{-1}%
     }
-    \ifnumcomp{\csuse{thesubframe@\theframenumber}}{=}{1}{}{
+    \ifnumcomp{\csuse{thesubframe@\theframenumber}}{=}{0}{}{
       \write\@auxout{%
         \csgdef{frame@needs@overlay@number@\theframenumber}{}%
       }%
@@ -22,7 +22,7 @@
     \stepcounter{subframe@\theframenumber}%
     \begingroup%
     \ifcsdef{frame@needs@overlay@number@\theframenumber}{%
-      \appto{\insertframenumber}{\subframe@formatter{}}%
+      \appto{\insertframenumber}{\subframe@formatter{subframe@\theframenumber}}%
     }{}%
   }{\endgroup}%
   % treat broken frames as overlays (freeze frame counter)
