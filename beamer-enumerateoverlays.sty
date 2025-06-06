@@ -3,10 +3,21 @@
 \RequirePackage{relsize}
 \RequirePackage{etoolbox}
 
+\newcommand\enumoverlaysresetsubframecounter{%
+  \ifltxcounter{subframe@\theframenumber}{%
+    \setcounter{subframe@\theframenumber}{-1}%
+  }{}%
+}%
+
+\newcommand\enumoverlaysunstepframenumber{%
+  \enumoverlaysresetsubframecounter%
+  \addtocounter{framenumber}{-1}%
+}%
+
 %
 % Enumerate subframes
 %
-\def\subframe@formatter#1{\relsize{-0.5}\ensuremath{_{\arabic{#1}}}}%
+\def\subframe@formatter#1{{\relsize{-1}\ensuremath{.{\arabic{#1}}}}}%
 \newcommand\enumerateoverlays{%
   \addtobeamertemplate{footline}{%
     \ifltxcounter{subframe@\theframenumber}{}{%
